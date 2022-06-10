@@ -26,7 +26,7 @@ app.get('/', (req,res) => {
 })
 
 
-//const mongoURI = "mongodb+srv://arjunuvlad:arjun123@hitman24.ct1jy.mongodb.net/?retryWrites=true&w=majority"
+const mongoURI = "mongodb+srv://RakeshRk:Rakesh1234@cluster0.6k9driq.mongodb.net/?retryWrites=true&w=majority"
 
 mongoose.connect(mongoURI) 
 .then(() => { 
@@ -36,10 +36,10 @@ mongoose.connect(mongoURI)
     console.log(err)
 })
 
-//app.set('secretKey','hdjsakfhdjskgfsdfgsdf')
+ app.set('secretKey','hdjsakfhdjskgfsdfgsdf')
 
 
-const userValidation = (req, res,next) => { 
+    const userValidation = (req, res,next) => { 
     jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), 
     (err,decoded) =>{
         if(err){
@@ -51,13 +51,13 @@ const userValidation = (req, res,next) => {
     }) 
 }
 
-// // Imported Routes of User and Movie
-// const userRoute = require('./app/api/routes/users')
+
+   const learnerRoute = require('./app/api/routes/learner')
 // const movieRoute = require('./app/api/routes/movies')
 
 
 // Express to use user Route with a default URL => /user
-app.use('/user',userRoute)
+app.use('/learner',learnerRoute)
 // Express to use user Route with a default URL => /movie
-app.use('/movie',userValidation, movieRoute)
+//app.use('/movie',userValidation, movieRoute)
 
