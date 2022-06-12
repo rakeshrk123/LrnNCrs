@@ -1,63 +1,53 @@
-const express = require('express') 
+const express = require("express");
+const logger = require("morgan");
+const bodyParser = require("body-parser");
+require("dotenv").config();
 
-const logger = require('morgan')
+const app = express();
+const leanerRoute = require("./app/api/routes/learner");
+const couserRoute = require("./app/api/routes/course");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+app.set("secretKey", "hdjsakfhdjsk");
+const userValidation = (req, res, next) => {
+  jwt.verify(
+    req.headers["x-access-token"],
+    req.app.get("secretKey"),
+    (err, decoded) => {
+      if (err) {
+        res.json({
+          message: err,
+        });
+      }
+      next();
+    }
+  );
+};
+app.use(logger("dev"));
+app.use(bodyParser.json());
+app.use("/learner", leanerRoute,userValidation);
 
-const bodyParser = require('body-parser')
+app.use("/course", userValidation, couserRoute);
 
-const mongoose = require('mongoose')
+app.get("/home", (req, res) => {
+  res.json({
+    APP: "JWT Based API Application",
+    message: "Successfully Running the Application",
+  });
+});
 
-const jwt = require('jsonwebtoken')
+const mongoURI =
+"mongodb+srv://RakeshRk:Rakesh1234@cluster0.6k9driq.mongodb.net/?retryWrites=true&w=majority";
 
-const app = express()
+mongoose
+  .connect(mongoURI)
+  .then(() => {
+    console.log("Successfully Connected to the Database");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
-
-app.use(logger('dev'))
-
-app.use(bodyParser.json())
-
-
-app.listen(5000,() => {
-    console.log("Successfully Running on the PORT: 5000")
-})
-
-
-app.get('/', (req,res) => {
-    console.log("Hello");
-})
-
-
-const mongoURI = "mongodb+srv://RakeshRk:Rakesh1234@cluster0.6k9driq.mongodb.net/?retryWrites=true&w=majority"
-
-mongoose.connect(mongoURI) 
-.then(() => { 
-    console.log("Successfully Connected to the Database")
-})
-.catch((err) => {
-    console.log(err)
-})
-
- app.set('secretKey','hdjsakfhdjskgfsdfgsdf')
-
-
-    const userValidation = (req, res,next) => { 
-    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), 
-    (err,decoded) =>{
-        if(err){
-            res.json({
-                message: err 
-            })
-        }
-        next() 
-    }) 
-}
-
-
-   const learnerRoute = require('./app/api/routes/learner')
-// const movieRoute = require('./app/api/routes/movies')
-
-
-// Express to use user Route with a default URL => /user
-app.use('/learner',learnerRoute)
-// Express to use user Route with a default URL => /movie
-//app.use('/movie',userValidation, movieRoute)
-
+app.listen(process.env.PORT || 5008, () => {
+  console.log("Successfully Running on the PORT: 5008");
+});

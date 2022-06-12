@@ -1,24 +1,27 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const LearnerSchema = new mongoose.Schema({
-    learner_name :{
+
+const learnerSchema = new mongoose.Schema({
+    learner_name:{
         type:String,
         required:true
     },
-    learner_email :{
+    learner_email:{
         type:String,
         required:true
     },
-    learner_password :{
+    learner_password:{
         type:String,
         required:true
     }
 })
 
-LearnerSchema.pre('save', function (next){
+
+// Encrypt the password
+learnerSchema.pre('save', function (next){
     const saltRounds = 10
-    this.password = bcrypt.hashSync(this.password, saltRounds)
+    this.password = bcrypt.hashSync(this.learner_password, saltRounds)
     next()
 })
 
-module.exports = mongoose.model("learner",LearnerSchema)
+module.exports = mongoose.model("learner",learnerSchema)

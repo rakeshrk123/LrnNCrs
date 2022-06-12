@@ -1,16 +1,17 @@
+const learnerModel=require('../models/learner')
+
 const bcrypt = require('bcrypt')
 
 const jwt = require('jsonwebtoken')
 
-const LearnerModel=require('../models/learner')
-
 const create = (req,res,next) => {
     const {learner_name, learner_email,learner_password} = req.body
-    LearnerModel.create({
+    learnerModel.create({
         learner_name, 
         learner_email,
         learner_password
     }, (err,result) => {
+        console.log("Not found")
         if(err)
             next(err) 
         else 
@@ -26,7 +27,7 @@ const create = (req,res,next) => {
 
 const login = (req,res,next) => {
 
-    LearnerModel.findOne({learner_email:req.body.learner_email}, (err,result) => {
+    learnerModel.findOne({learner_email:req.body.learner_email}, (err,result) => {
     if(err){
         next(err)
     }
@@ -34,7 +35,7 @@ const login = (req,res,next) => {
        
         if(bcrypt.compare(req.body.learner_password, result.learner_password)){
             
-            const token = jwt.sign({id:result._id},req.app.get('secretKey'), {expiresIn:'1h'})
+            const token = jwt.sign({id:result._id},req.app.get('secretKey'), {expiresIn:'10h'})
 
             res.json({
                 status:"Success",
@@ -50,3 +51,4 @@ const login = (req,res,next) => {
 }
 
 module.exports = {create, login}
+

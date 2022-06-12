@@ -1,8 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const learnerController=require('../controllers/learner')
+const express = require("express");
+const router = express.Router();
+const learnerController = require("../controllers/learner");
 
-router.post('/register',learnerController.create)
-router.post('/login',learnerController.login)
+router.post("/register", learnerController.create);
+router.post("/login", learnerController.login);
 
-module.exports = router
+module.exports = router;
+
